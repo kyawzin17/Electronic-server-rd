@@ -51,3 +51,5 @@ export type User = Prisma.UserModel
  * 
  */
 export type OtpStore = Prisma.OtpStoreModel
+
+export type Role = Prisma.RoleEnum
