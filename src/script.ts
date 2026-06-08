@@ -1,6 +1,7 @@
 // Postgres Database မှာ ‌Admin ပေါင်းထည့်ဖို့ ==> Add Admin User (Kyaw Zin Win)
 //npx tsx src/script.ts
-import { prisma, Role } from "../lib/prisma";
+import { prisma } from "../lib/prisma";
+import type { Role } from "../lib/prisma";
 import bcrypt from "bcrypt";
 
 const addAdmin = async (name: string, email: string, password: string, role: Role) => {
@@ -19,7 +20,7 @@ const addAdmin = async (name: string, email: string, password: string, role: Rol
 
 const main = async () => {
     try {
-    await addAdmin("Kyaw Zin Win", "kyawzinwin23k@gmail.com", "176622osk", Role.ADMIN);
+    await addAdmin("Kyaw Zin Win", "kyawzinwin23k@gmail.com", "176622osk", "ADMIN");
     } catch (error) {
         console.error("Error creating admin user:", error);
     }
