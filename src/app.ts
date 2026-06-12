@@ -13,6 +13,12 @@ import login from "./module/login/login.router.js";
 import googleLoginAndRegister from "./module/googleLoginAndRegister/google.router.js";
 // Bio Edit
 import bioEdit from "./module/bioEdit/bio.router.js";
+import userRouter from "./module/editProfile/edit.router.js";
+// OTP
+import otpRouter from "./module/register/otp.router.js";
+import verifyOtpRouter from "./module/register/verifyOtp.router.js";
+// Password Fill
+import passwordFillRouter from "./module/register/completeRegister.router.js";
 
 
 
@@ -23,7 +29,11 @@ app.use("/api", user);
 app.use("/api", avatarUpload);
 app.use("/api", autoLogin);
 app.use("/api", login);
+app.use("/api", otpRouter);
+app.use("/api", verifyOtpRouter);   
+app.use("/api", passwordFillRouter);
 app.use("/api", googleLoginAndRegister);
 app.use("/api", bioEdit);
+app.use("/api", userRouter);
 
 export default app;

@@ -15,7 +15,7 @@
  * model files in the `model` directory!
  */
 
-import * as runtime from "@prisma/client/runtime/index-browser.js"
+import * as runtime from "@prisma/client/runtime/index-browser"
 
 export type * from '../models.js'
 export type * from './prismaNamespace.js'
@@ -77,6 +77,8 @@ export const UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   bio: 'bio',
+  hobby: 'hobby',
+  gender: 'gender',
   avatarUrl: 'avatarUrl',
   role: 'role',
   googleId: 'googleId',

@@ -27,9 +27,11 @@ export const verifyOtpController = async (req: Request, res: Response) => {
       await prisma.otpStore.delete({ where: { email: email.toLowerCase().trim() } });
       return res.status(400).json({ success: false, message: 'OTP ကုဒ် သက်တမ်းကုန်သွားပါပြီ။ အသစ်ပြန်တောင်းပါ။' });
     }
+    console.log(otpRecord.otp);
+    console.log(otp);
 
     // ၄။ ရိုက်ထည့်လိုက်သော OTP နှင့် DB ထဲက OTP ကို တိုက်စစ်ခြင်း
-    if (otpRecord.otp !== otp.trim()) {
+    if (otpRecord.otp !== otp) {
       return res.status(400).json({ success: false, message: 'OTP ကုဒ် မှားယွင်းနေပါသည်။' });
     }
 

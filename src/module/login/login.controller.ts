@@ -23,5 +23,6 @@ export const loginController = async (req: Request, res: Response) => {
      }
     // Login အောင်မြင်ပါက Token ထုတ်ပေးရန် (jsonwebtoken ကို အသုံးပြု၍)
      const token = jwt.sign({ userId: user.id }, secret!, { expiresIn: '30d' });
-     return res.status(200).json({ message: "Login အောင်မြင်ပါသည်။", token, user });
+     const noPassword= {...user, password: ""};
+     return res.status(200).json({ message: "Login အောင်မြင်ပါသည်။", token, noPassword });
 };

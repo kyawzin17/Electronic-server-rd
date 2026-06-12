@@ -46,6 +46,8 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
         name: true,
         email: true,
         avatarUrl: true,
+        hobby: true,
+        gender: true,
         role: true,
         bio: true,
         createdAt: true,
@@ -62,6 +64,8 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
           name: true,
           email: true,
           avatarUrl: true,
+          hobby: true,
+          gender: true,
           role: true,
           bio: true,
           createdAt: true,
@@ -108,17 +112,8 @@ export const googleAuth = async (req: Request, res: Response): Promise<void> => 
       success: true,
       message: "Google Authentication Successful",
       token: systemToken,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatarUrl: user.avatarUrl,
-        role: user.role,
-        bio: user.bio,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      }
-    });
+     user,
+         });
 
   } catch (error) {
     console.error("Google Auth Error:", error);

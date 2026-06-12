@@ -43,7 +43,7 @@ export const autoLoginMiddleware = async (
     // ၃။ Database ထဲမှာ ဒီ User တကယ်ရှိသေးရဲ့လား စစ်ဆေးခြင်း
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
-      select: { id: true, name: true, email: true, role: true, avatarUrl: true, bio: true, createdAt: true, updatedAt: true } // Password ကို ဖယ်ပြီး Data ပဲ ယူမယ်
+      select: { id: true, name: true, email: true, role: true, avatarUrl: true, bio: true, hobby: true, gender: true, createdAt: true, updatedAt: true } // Password ကို ဖယ်ပြီး Data ပဲ ယူမယ်
     });
 
     if (!user) {

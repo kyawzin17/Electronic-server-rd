@@ -19,10 +19,11 @@ export const autoLoginController = async (req: AuthenticatedRequest, res: Respon
       { expiresIn: '30d' } // ရက် ၃၀ သက်တမ်းတိုး
     );
 
+    const noPassword= {...user, password: ""};
     // Frontend ဆီကို Email/Password မပါဘဲ ဒီ Data တွေပဲ တန်းပြန်ပို့ပေးလိုက်ပါမယ်
     return res.status(200).json({
       success: true,
-      user,         // { id, name, email, role } ပါဝင်မည်
+      noPassword,         // { id, name, email, role } ပါဝင်မည်
       token: newToken // Frontend က ရရင် local storage မှာ အစားထိုးသိမ်းရမယ့် Token သစ်
     });
 

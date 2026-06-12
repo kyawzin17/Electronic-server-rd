@@ -42,7 +42,7 @@ export const completeRegisterController = async (req: Request, res: Response) =>
         name: decodedData.name,
         password: hashedPassword,
       },
-      select: { id: true, name: true, email: true, role: true } // Password ချန်လှပ်ခဲ့မည်
+      select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true, bio: true, gender: true, hobby: true, avatar: true } // Password ချန်လှပ်ခဲ့မည်
     });
 
     // ၄။ အကောင့်ဆောက်ပြီးတာနဲ့ တန်းပြီး Login ဝင်သွားစေဖို့အတွက် တကယ့် Login Token ထုတ်ပေးခြင်း

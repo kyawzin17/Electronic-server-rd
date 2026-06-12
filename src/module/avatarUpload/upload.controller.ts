@@ -39,7 +39,7 @@ export const uploadImageController = async (req: Request, res: Response): Promis
     })
     return res.status(200).json({
       success: true,
-      data: user,
+      data: user.avatarUrl,
     });
 
   } catch (error: any) {
