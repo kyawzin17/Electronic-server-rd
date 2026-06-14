@@ -1,5 +1,6 @@
 import cloudinary from '../../config/cloudinary.js';
 import multer from 'multer';
+import 'dotenv/config';
 
 
 // Memory Storage ကို သုံးပြီး RAM ပေါ်မှာပဲ ခဏသိမ်းမည်

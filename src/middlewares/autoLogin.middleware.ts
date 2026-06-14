@@ -2,6 +2,8 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../lib/prisma.js';
+import 'dotenv/config';
+
 
 // Token ထဲက ပေါ်လာမယ့် Payload ပုံစံကို သတ်မှတ်ခြင်း
 interface JwtPayload {

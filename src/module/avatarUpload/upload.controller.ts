@@ -1,5 +1,7 @@
 import type { Request, Response } from 'express';
 import { cloudinary } from './upload.servic.js';
+import 'dotenv/config';
+
 import { prisma } from '../../lib/prisma.js';
 
 export const uploadImageController = async (req: Request, res: Response): Promise<any> => {

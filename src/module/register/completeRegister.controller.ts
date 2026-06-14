@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 import { prisma } from '../../lib/prisma.js'; // သင့်ရဲ့ prisma client လမ်းကြောင်း
 
 interface CustomJwtPayload {

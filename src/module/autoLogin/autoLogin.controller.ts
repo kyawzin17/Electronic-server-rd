@@ -2,6 +2,8 @@
 import type { Response } from 'express';
 import type { AuthenticatedRequest } from '../../middlewares/autoLogin.middleware.js'; // သင့်ဖိုင်ပတ်လမ်းကြောင်း ပြင်ပေးပါ
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
+
 
 export const autoLoginController = async (req: AuthenticatedRequest, res: Response) => {
   try {

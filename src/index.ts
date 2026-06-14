@@ -1,6 +1,8 @@
 import app from "./app.js";
 import express from "express";
 const server = express();
+import 'dotenv/config';
+
 
 server.use("/", app);
 

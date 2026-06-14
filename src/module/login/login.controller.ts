@@ -3,6 +3,8 @@ import { prisma } from "../../lib/prisma.js";
 import type { Request, Response } from "express";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+import 'dotenv/config';
+
 
 export const loginController = async (req: Request, res: Response) => {
     const { email, password } = loginSchema.parse(req.body);

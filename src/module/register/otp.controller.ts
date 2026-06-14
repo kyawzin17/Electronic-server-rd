@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import 'dotenv/config';
 import crypto from 'crypto';
 import { Resend } from 'resend';
 import { prisma } from '../../lib/prisma.js'; // သင့်ရဲ့ prisma client လမ်းကြောင်း
