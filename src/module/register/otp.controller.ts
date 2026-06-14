@@ -69,7 +69,7 @@ export const otpController = async (req: Request, res: Response) => {
       html: `
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 30px; max-width: 450px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
           <h2 style="color: #1a202c; font-size: 22px; font-weight: 600; margin-bottom: 16px;">မင်္ဂလာပါ ${name},</h2>
-          <p style="color: #4a5568; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">သင့်အကောင့်ကို အသက်သွင်းရန် အောက်ပါ ဂဏန်း ၆ လုံးပါဝင်သော OTP ကုဒ်ကို အသုံးပြုပေးပါ။ ဤကုဒ်သည် လုံခြုံရေးအရ <b>၅ မိနစ်</b> သာ သက်တမ်းရှိပါမည်။</p>
+          <p style="color: #4a5568; font-size: 15px; line-height: 1.6; margin-bottom: 24px;">သင့်အကောင့်ကို အသက်သွင်းရန် အောက်ပါ ဂဏန်း ၆ လုံးပါဝင်သော OTP ကုဒ်ကို အသုံးပြုပေးပါ။ ဤကုဒ်သည် လုံခြုံရေးအရ <b>၁ မိနစ်</b> သာ သက်တမ်းရှိပါမည်။</p>
           
           <div style="background-color: #f7fafc; padding: 18px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #1a0dab; border-radius: 8px; border: 1px solid #edf2f7; margin-bottom: 24px;">
             ${otp}

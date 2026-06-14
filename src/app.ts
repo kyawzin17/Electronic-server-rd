@@ -19,6 +19,8 @@ import otpRouter from "./module/register/otp.router.js";
 import verifyOtpRouter from "./module/register/verifyOtp.router.js";
 // Password Fill
 import passwordFillRouter from "./module/register/completeRegister.router.js";
+// Delete User
+import deleteUserRouter from "./module/deleteUser/deleteUser.router.js";
 
 
 
@@ -35,5 +37,6 @@ app.use("/api", passwordFillRouter);
 app.use("/api", googleLoginAndRegister);
 app.use("/api", bioEdit);
 app.use("/api", userRouter);
+app.use("/api", deleteUserRouter);
 
 export default app;

@@ -10,10 +10,14 @@ interface CustomJwtPayload {
 }
 
 export const completeRegisterController = async (req: Request, res: Response) => {
-  try {
+ 
     const { password } = req.body;
     
+    if (!password) {
+      return res.status(400).json({ success: false, message: 'Password သည် အနည်းဆုံး စာလုံး ၆ လုံး ရှိရပါမည်။' });
+    }
     // Header ထဲကနေ ယာယီ Signup Token ကို ဆွဲထုတ်ခြင်း
+    
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ success: false, message: 'ခွင့်ပြုချက်မရှိပါ၊ ယာယီ Token မပါလာပါ။' });
@@ -34,7 +38,7 @@ export const completeRegisterController = async (req: Request, res: Response) =>
 
     // ✅ အခုလိုမျိုး Custom Jwt Payload အဖြစ် ပြောင်းလဲသတ်မှတ်ပေးလိုက်ပါ
     const decodedData = decoded as CustomJwtPayload;
-
+ try {
     // ၃။ တကယ့် User Table ထဲမှာ အကောင့်အသစ် တကယ်ဆောက်လိုက်ခြင်း
     const newUser = await prisma.user.create({
       data: {
@@ -42,9 +46,12 @@ export const completeRegisterController = async (req: Request, res: Response) =>
         name: decodedData.name,
         password: hashedPassword,
       },
-      select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true, bio: true, gender: true, hobby: true, avatar: true } // Password ချန်လှပ်ခဲ့မည်
+      select: { id: true, name: true, email: true, role: true, createdAt: true, updatedAt: true, bio: true, gender: true, hobby: true, avatarUrl: true } // Password ချန်လှပ်ခဲ့မည်
     });
 
+    if (!newUser) {
+      return res.status(500).json({ success: false, message: 'အကောင့်ဆောက်ပြီးတာနဲ့ တန်းပြီး Login ဝင်သွားစေဖို့အတွက် တကယ့် Login Token ထုတ်ပေးခ�း' });
+    }
     // ၄။ အကောင့်ဆောက်ပြီးတာနဲ့ တန်းပြီး Login ဝင်သွားစေဖို့အတွက် တကယ့် Login Token ထုတ်ပေးခြင်း
     const loginToken = jwt.sign(
       { userId: newUser.id },
@@ -59,8 +66,8 @@ export const completeRegisterController = async (req: Request, res: Response) =>
       token: loginToken // Frontend က ဒါကိုရရင် LocalStorage မှာ သိမ်းပြီး Auto-Login တန်းဝင်ခိုင်းလိုက်ရုံပါပဲ
     });
 
-  } catch (error) {
+  } catch (error: any) {
     // Token သက်တမ်းကုန်ရင် (၁၅ မိနစ်ကျော်သွားရင်) ဒီထဲရောက်မယ်
-    return res.status(401).json({ success: false, message: 'ယာယီ Token သက်တမ်းကုန်သွားပါပြီ။ အစကနေ ပြန်စပါ။' });
+    return res.status(401).json({ success: false, message: error.message || 'Token verification failed' });
   }
 };
