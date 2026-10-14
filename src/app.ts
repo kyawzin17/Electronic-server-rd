@@ -22,7 +22,7 @@ import passwordFillRouter from "./module/register/completeRegister.router.js";
 // Delete User
 import deleteUserRouter from "./module/deleteUser/deleteUser.router.js";
 
-
+import arduinoRoutes from "./routes/arduino.routes.js";
 
 app.use(cors());
 app.use(express.json());
@@ -38,5 +38,13 @@ app.use("/api", googleLoginAndRegister);
 app.use("/api", bioEdit);
 app.use("/api", userRouter);
 app.use("/api", deleteUserRouter);
+
+// =====================================================
+// ROUTES
+// =====================================================
+
+app.use("/api/arduino", arduinoRoutes);
+
+
 
 export default app;
