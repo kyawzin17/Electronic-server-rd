@@ -48,6 +48,7 @@
 #define SSD1306_INVERTDISPLAY 0xA7
 #define SSD1306_DEACTIVATE_SCROLL 0x2E
 
+/* RDE simulator-compatible SSD1306 SPI driver for 128x64 and 128x32 Uno displays. */
 class Adafruit_SSD1306 : public Adafruit_GFX {
 public:
   // Hardware SPI: DATA=D11, CLK=D13 on UNO; DC/CS/RST are GPIO pins.
@@ -185,16 +186,31 @@ public:
     beginTransfer();
     command(SSD1306_COLUMNADDR);
     command(0);
-    command(127);
+    command(static_cast<uint8_t>(width() - 1));
     command(SSD1306_PAGEADDR);
     command(0);
-    command(7);
+    command(static_cast<uint8_t>((height() + 7) / 8 - 1));
 
     dataMode(true);
-    for (size_t i = 0; i < sizeof(_buffer); ++i) {
+    const size_t bytesToSend =
+      static_cast<size_t>(width()) *
+      static_cast<size_t>((height() + 7) / 8);
+    for (size_t i = 0; i < bytesToSend; ++i) {
       transferByte(_buffer[i]);
     }
     dataMode(false);
+    endTransfer();
+  }
+
+  void displayOff() {
+    beginTransfer();
+    command(SSD1306_DISPLAYOFF);
+    endTransfer();
+  }
+
+  void displayOn() {
+    beginTransfer();
+    command(SSD1306_DISPLAYON);
     endTransfer();
   }
 
@@ -202,6 +218,34 @@ public:
     beginTransfer();
     command(inverse ? SSD1306_INVERTDISPLAY : SSD1306_NORMALDISPLAY);
     endTransfer();
+  }
+
+  bool getPixel(int16_t x, int16_t y) const {
+    if (x < 0 || y < 0 || x >= width() || y >= height()) return false;
+    const size_t index = static_cast<size_t>(x) + static_cast<size_t>(y / 8) * 128;
+    return (_buffer[index] & static_cast<uint8_t>(1U << (y & 7))) != 0;
+  }
+
+  void drawBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color = SSD1306_WHITE) {
+    if (!bitmap || w <= 0 || h <= 0) return;
+    const int16_t byteWidth = (w + 7) / 8;
+    for (int16_t row = 0; row < h; ++row) {
+      for (int16_t col = 0; col < w; ++col) {
+        const uint8_t value = bitmap[row * byteWidth + col / 8];
+        if (value & (0x80U >> (col & 7))) drawPixel(x + col, y + row, color);
+      }
+    }
+  }
+
+  void drawXBitmap(int16_t x, int16_t y, const uint8_t *bitmap, int16_t w, int16_t h, uint16_t color = SSD1306_WHITE) {
+    if (!bitmap || w <= 0 || h <= 0) return;
+    const int16_t byteWidth = (w + 7) / 8;
+    for (int16_t row = 0; row < h; ++row) {
+      for (int16_t col = 0; col < w; ++col) {
+        const uint8_t value = bitmap[row * byteWidth + col / 8];
+        if (value & (1U << (col & 7))) drawPixel(x + col, y + row, color);
+      }
+    }
   }
 
   void dim(bool dimmed) {
