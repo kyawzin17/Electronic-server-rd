@@ -369,7 +369,11 @@ uint8_t Servo::attach(
   int min,
   int max
 ) {
-  if (servoIndex_ == INVALID_SERVO) {
+  if (
+    servoIndex_ == INVALID_SERVO ||
+    pin < 0 ||
+    pin > 19
+  ) {
     return INVALID_SERVO;
   }
 
