@@ -11,6 +11,7 @@ const execFileAsync = promisify(execFile);
 export type CompileOptions = {
   code: string;
   fqbn?: string;
+  libraries?: string[];
 };
 
 export type CompileResult = {
@@ -45,7 +46,7 @@ export async function getArduinoBoards() {
  * Arduino Sketch ကို Temp Folder တွင် ရေးသားပြီး Arduino CLI နှင့် Compile လုပ်ပေးသည့် service
  */
 export async function compileSketch(options: CompileOptions): Promise<CompileResult> {
-  const { code, fqbn = "arduino:avr:uno" } = options;
+  const { code, fqbn = "arduino:avr:uno", libraries = [] } = options;
 
   /* ---------------------------------------------
      1. Code Validation
@@ -59,6 +60,32 @@ export async function compileSketch(options: CompileOptions): Promise<CompileRes
   --------------------------------------------- */
   if (Buffer.byteLength(code, "utf8") > 200_000) {
     throw new ArduinoCompilationError("Arduino sketch is too large.", 413);
+  }
+
+  // Reject selected libraries that are not bundled, rather than silently
+  // pretending that adding an #include installed the library.
+  if (!Array.isArray(libraries) || libraries.some((id) => typeof id !== "string")) {
+    throw new ArduinoCompilationError("Invalid libraries selection.", 400);
+  }
+
+  if (libraries.length > 30) {
+    throw new ArduinoCompilationError("Too many libraries selected.", 400);
+  }
+
+  if (libraries.length > 0) {
+    const catalog = await getArduinoLibraries();
+    const byId = new Map(catalog.map((library) => [library.id, library]));
+    const missing = [...new Set(libraries)].filter((id) => {
+      const library = byId.get(id);
+      return !library || !library.sourceAvailable;
+    });
+
+    if (missing.length > 0) {
+      throw new ArduinoCompilationError(
+        `Selected library source is not available to the compiler: ${missing.join(", ")}. Remove it or choose a bundled library.`,
+        422,
+      );
+    }
   }
 
   let tempRoot: string | null = null;
