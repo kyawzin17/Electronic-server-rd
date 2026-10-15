@@ -214,11 +214,11 @@ export type ArduinoLibraryInfo = {
   author: string;
   sourceAvailable: boolean;
   sourceKind: "bundled" | "arduino-core" | "missing";
-  runtimeStatus: "not-verified";
+  runtimeStatus: "implemented" | "not-verified";
 };
 
 const LIBRARY_CATALOG: Array<Omit<ArduinoLibraryInfo, "sourceAvailable" | "sourceKind" | "runtimeStatus"> & { header?: string; core?: boolean }> = [
-  { id: "liquidcrystal-i2c", name: "LiquidCrystal I2C", include: "#include <LiquidCrystal_I2C.h>", category: "Display", description: "Control character LCDs over I2C.", author: "Frank de Brabander", header: "LiquidCrystal_I2C/LiquidCrystal_I2C.h" },
+  { id: "liquidcrystal-i2c", name: "LiquidCrystal I2C", include: "#include <LiquidCrystal_I2C.h>", category: "Display", description: "Control character LCDs over I2C.", author: "Frank de Brabander", header: "LiquidCrystal_I2C/src/LiquidCrystal_I2C.h" },
   { id: "adafruit-ssd1306", name: "Adafruit SSD1306", include: "#include <Adafruit_SSD1306.h>", category: "Display", description: "Driver for SSD1306 monochrome OLED displays.", author: "Adafruit", header: "Adafruit_SSD1306/Adafruit_SSD1306.h" },
   { id: "adafruit-gfx", name: "Adafruit GFX Library", include: "#include <Adafruit_GFX.h>", category: "Display", description: "Drawing primitives for display libraries.", author: "Adafruit", header: "Adafruit_GFX_Library/Adafruit_GFX.h" },
   { id: "dht-sensor", name: "DHT sensor library", include: "#include <DHT.h>", category: "Sensor", description: "Read temperature and humidity from DHT11/DHT22.", author: "Adafruit", header: "DHT_sensor_library/DHT.h" },
@@ -249,7 +249,7 @@ export async function getArduinoLibraries(): Promise<ArduinoLibraryInfo[]> {
         author: library.author,
         sourceAvailable: true,
         sourceKind: "arduino-core" as const,
-        runtimeStatus: "not-verified" as const,
+        runtimeStatus: "implemented" as const,
       };
     }
 
@@ -272,7 +272,7 @@ export async function getArduinoLibraries(): Promise<ArduinoLibraryInfo[]> {
       author: library.author,
       sourceAvailable,
       sourceKind: sourceAvailable ? "bundled" as const : "missing" as const,
-      runtimeStatus: "not-verified" as const,
+      runtimeStatus: sourceAvailable && ["liquidcrystal-i2c", "adafruit-ssd1306", "adafruit-gfx", "keypad", "rtclib", "liquidcrystal-parallel", "servo", "neopixel"].includes(library.id) ? "implemented" as const : "not-verified" as const,
     };
   }));
 }
