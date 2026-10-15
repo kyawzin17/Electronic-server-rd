@@ -3,6 +3,10 @@
 
 #include <Arduino.h>
 
+#ifndef NO_KEY
+#define NO_KEY '\0'
+#endif
+
 /*
  * RDE simulator-compatible implementation of the common Mark Stanley /
  * Alexander Brevig Keypad API. Matrix input is read through Arduino GPIO,
