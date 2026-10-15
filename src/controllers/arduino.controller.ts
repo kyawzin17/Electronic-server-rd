@@ -9,6 +9,7 @@ import {
 type CompileRequest = {
   code: string;
   fqbn?: string;
+  libraries?: string[];
 };
 
 type CompileResponse = {
@@ -77,7 +78,11 @@ export async function compileArduinoRoute(req: Request, res: Response) {
         : "arduino:avr:uno";
 
     // Service သို့ ခေါ်ယူအသုံးပြုခြင်း
-    const result = await compileSketch({ code, fqbn });
+    const result = await compileSketch({
+      code,
+      fqbn,
+      libraries: Array.isArray(body.libraries) ? body.libraries : [],
+    });
 
     const response: CompileResponse = {
       success: true,
