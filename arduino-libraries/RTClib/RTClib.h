@@ -4,15 +4,9 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-
-#define RTCLIB_VERSION 214
 
 // Forward declaration: DateTime exposes operators taking TimeSpan below.
 class TimeSpan;
-
-enum timestampOpt { TIMESTAMP_TIME, TIMESTAMP_DATE, TIMESTAMP_FULL };
 
 /*
  * Simulator-compatible subset of Adafruit RTClib.
@@ -198,64 +192,6 @@ public:
     return _unixtime - 946684800UL;
   }
 
-  char *toString(char *buffer) const {
-    if (!buffer) return buffer;
-    char format[64];
-    strncpy(format, buffer, sizeof(format) - 1);
-    format[sizeof(format) - 1] = '\0';
-    const Civil v = civil();
-    char output[128];
-    size_t out = 0;
-    for (size_t i = 0; format[i] && out < sizeof(output) - 1;) {
-      const char *token = nullptr;
-      char rendered[16] = {0};
-      size_t consumed = 1;
-      if (strncmp(format + i, "YYYY", 4) == 0) {
-        snprintf(rendered, sizeof(rendered), "%04u", v.year); consumed = 4;
-      } else if (strncmp(format + i, "YY", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.year % 100); consumed = 2;
-      } else if (strncmp(format + i, "MMM", 3) == 0) {
-        static const char *months[] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-        token = months[v.month >= 1 && v.month <= 12 ? v.month - 1 : 0]; consumed = 3;
-      } else if (strncmp(format + i, "MM", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.month); consumed = 2;
-      } else if (strncmp(format + i, "DD", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.day); consumed = 2;
-      } else if (strncmp(format + i, "hh", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.hour); consumed = 2;
-      } else if (strncmp(format + i, "mm", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.minute); consumed = 2;
-      } else if (strncmp(format + i, "ss", 2) == 0) {
-        snprintf(rendered, sizeof(rendered), "%02u", v.second); consumed = 2;
-      } else if (strncmp(format + i, "AP", 2) == 0) {
-        token = v.hour >= 12 ? "PM" : "AM"; consumed = 2;
-      } else if (strncmp(format + i, "ap", 2) == 0) {
-        token = v.hour >= 12 ? "pm" : "am"; consumed = 2;
-      } else {
-        rendered[0] = format[i];
-      }
-      const char *part = token ? token : rendered;
-      while (*part && out < sizeof(output) - 1) output[out++] = *part++;
-      i += consumed;
-    }
-    output[out] = '\0';
-    strcpy(buffer, output);
-    return buffer;
-  }
-
-  String timestamp(timestampOpt opt = TIMESTAMP_FULL) const {
-    char buffer[24];
-    const Civil v = civil();
-    if (opt == TIMESTAMP_DATE) {
-      snprintf(buffer, sizeof(buffer), "%04u-%02u-%02u", v.year, v.month, v.day);
-    } else if (opt == TIMESTAMP_TIME) {
-      snprintf(buffer, sizeof(buffer), "%02u:%02u:%02u", v.hour, v.minute, v.second);
-    } else {
-      snprintf(buffer, sizeof(buffer), "%04u-%02u-%02uT%02u:%02u:%02u", v.year, v.month, v.day, v.hour, v.minute, v.second);
-    }
-    return String(buffer);
-  }
-
   bool operator<(const DateTime &other) const {
     return _unixtime < other._unixtime;
   }
@@ -279,9 +215,6 @@ public:
   bool operator>=(const DateTime &other) const {
     return _unixtime >= other._unixtime;
   }
-
-  DateTime &operator+=(const TimeSpan &span);
-  DateTime &operator-=(const TimeSpan &span);
 
   DateTime operator+(const TimeSpan &span) const;
   DateTime operator-(const TimeSpan &span) const;
@@ -528,15 +461,6 @@ public:
   int32_t seconds() const { return _seconds % 60L; }
   int32_t totalseconds() const { return _seconds; }
 
-  bool operator==(const TimeSpan &other) const { return _seconds == other._seconds; }
-  bool operator!=(const TimeSpan &other) const { return _seconds != other._seconds; }
-  bool operator<(const TimeSpan &other) const { return _seconds < other._seconds; }
-  bool operator>(const TimeSpan &other) const { return _seconds > other._seconds; }
-  bool operator<=(const TimeSpan &other) const { return _seconds <= other._seconds; }
-  bool operator>=(const TimeSpan &other) const { return _seconds >= other._seconds; }
-  TimeSpan operator+(const TimeSpan &other) const { return TimeSpan(_seconds + other._seconds); }
-  TimeSpan operator-(const TimeSpan &other) const { return TimeSpan(_seconds - other._seconds); }
-
 private:
   int32_t _seconds;
   friend class DateTime;
@@ -548,16 +472,6 @@ inline DateTime DateTime::operator+(const TimeSpan &span) const {
 
 inline DateTime DateTime::operator-(const TimeSpan &span) const {
   return DateTime(_unixtime - span._seconds);
-}
-
-inline DateTime &DateTime::operator+=(const TimeSpan &span) {
-  _unixtime += span._seconds;
-  return *this;
-}
-
-inline DateTime &DateTime::operator-=(const TimeSpan &span) {
-  _unixtime -= span._seconds;
-  return *this;
 }
 
 enum Ds1307SqwPinMode {
