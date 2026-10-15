@@ -3,6 +3,7 @@ import {
   getArduinoBoards,
   compileSketch,
   ArduinoCompilationError,
+  getArduinoLibraries,
 } from "../services/arduino.service.js";
 
 type CompileRequest = {
@@ -36,6 +37,27 @@ export async function detectBoards(_req: Request, res: Response) {
     res.status(500).json({
       success: false,
       message: "Failed to detect Arduino boards",
+    });
+  }
+}
+
+// =====================================================
+// LIBRARY CATALOG CONTROLLER
+// =====================================================
+
+export async function listArduinoLibraries(_req: Request, res: Response) {
+  try {
+    const libraries = await getArduinoLibraries();
+    return res.json({
+      success: true,
+      libraries,
+      note: "sourceAvailable confirms a compiler header is present; runtimeStatus must be verified against simulated hardware.",
+    });
+  } catch (error) {
+    console.error("[Arduino Controller] Library catalog error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load Arduino library catalog",
     });
   }
 }
