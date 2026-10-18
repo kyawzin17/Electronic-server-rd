@@ -88,6 +88,33 @@ export async function compileSketch(options: CompileOptions): Promise<CompileRes
     }
   }
 
+  // Enforce project-level library installation on the server, not only in the UI.
+  // Ignore commented-out code so an example in a comment does not trigger a false error.
+  const codeWithoutComments = code
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/.*$/gm, "$1");
+  const includeNames = [...codeWithoutComments.matchAll(/^\s*#\s*include\s*[<"]([^>"]+)[>"]/gm)]
+    .map((match) => match[1].trim());
+
+  if (includeNames.length > 0) {
+    const catalog = await getArduinoLibraries();
+    const selectedIds = new Set(libraries);
+    const libraryByInclude = new Map(
+      catalog.map((library) => [library.include.match(/[<"]([^>"]+)[>"]/)?.[1], library]),
+    );
+    const notAdded = [...new Set(includeNames)]
+      .map((includeName) => ({ includeName, library: libraryByInclude.get(includeName) }))
+      .filter(({ library }) => library && !selectedIds.has(library.id));
+
+    if (notAdded.length > 0) {
+      const names = notAdded.map(({ library }) => library!.name);
+      throw new ArduinoCompilationError(
+        `Add these libraries in Library Manager before compiling: ${names.join(", ")}.`,
+        422,
+      );
+    }
+  }
+
   let tempRoot: string | null = null;
 
   try {
