@@ -14,10 +14,10 @@ type CompileRequest = {
 
 type CompileResponse = {
   success: boolean;
-  hex?: string;
-  fqbn?: string;
-  logs?: string;
-  error?: string;
+  hex?: string | undefined;
+  fqbn?: string | undefined;
+  logs?: string | undefined;
+  error?: string | undefined;
 };
 
 // =====================================================
