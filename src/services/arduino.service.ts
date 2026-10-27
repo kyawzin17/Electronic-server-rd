@@ -24,9 +24,9 @@ export type CompileResult = {
 
 export class ArduinoCompilationError extends Error {
   public statusCode: number;
-  public logs?: string;
+  public logs?: string | undefined;
 
-  constructor(message: string, statusCode: number = 500, logs?: string) {
+  constructor(message: string, statusCode: number = 500, logs?: string | undefined) {
     super(message);
     this.name = "ArduinoCompilationError";
     this.statusCode = statusCode;
@@ -94,7 +94,7 @@ export async function compileSketch(options: CompileOptions): Promise<CompileRes
     .replace(/\/\*[\s\S]*?\*\//g, "")
     .replace(/(^|[^:])\/\/.*$/gm, "$1");
   const includeNames = [...codeWithoutComments.matchAll(/^\s*#\s*include\s*[<"]([^>"]+)[>"]/gm)]
-    .map((match) => match[1].trim());
+    .map((match) => match[1]?.trim());
 
   if (includeNames.length > 0) {
     const catalog = await getArduinoLibraries();
